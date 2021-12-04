@@ -5,12 +5,58 @@ import { Dispatch } from 'redux';
 import {
     ChangeActionAC,
     ChangeCurrencyFieldAC,
-    СhangeCurrentCurrencyAC,
+    ChangeCurrentCurrencyAC,
     CurrencyReducersTypes
 } from '../../redux/actions';
-import { connect, ConnectedProps } from 'react-redux';
+import {connect, ConnectedProps, useDispatch, useSelector} from 'react-redux';
+import {
+    selectAllCurrencyState, selectAmountOfBYN, selectAmountOfCurrency,
+    selectCurrencies,
+    selectCurrentCurrency,
+    selectIsBuying
+} from "../../lessons/lesson1/selectors";
 
-const CurrencyEContainer: React.FC<TProps> = props => {
+// const CurrencyEContainer: React.FC<TProps> = props => {
+const CurrencyEContainer: React.FC = () => {
+
+    // const {
+    //     currencies,
+    //     currentCurrency,
+    //     isBuying,
+    //     amountOfBYN,
+    //     amountOfCurrency,
+    //     setCurrencyAmount,
+    //     setAction,
+    //     changeCurrency,
+    // } = props;
+
+    // const {
+    //     currencies,
+    //     currentCurrency,
+    //     isBuying,
+    //     amountOfBYN,
+    //     amountOfCurrency,
+    //     ChangeActionAC,
+    //     ChangeCurrencyFieldAC,
+    //     ChangeCurrentCurrencyAC,
+    // } = props;
+
+    // const {
+    //     currencies,
+    //     currentCurrency,
+    //     isBuying,
+    //     amountOfBYN,
+    //     amountOfCurrency,
+    // } = props;
+
+
+
+    const dispatch = useDispatch<Dispatch<CurrencyReducersTypes>>();
+    // const currencies = useSelector(selectCurrencies);
+    // const currentCurrency = useSelector(selectCurrentCurrency);
+    // const isBuying = useSelector(selectIsBuying);
+    // const amountOfBYN = useSelector(selectAmountOfBYN);
+    // const amountOfCurrency = useSelector(selectAmountOfCurrency);
 
     const {
         currencies,
@@ -18,10 +64,7 @@ const CurrencyEContainer: React.FC<TProps> = props => {
         isBuying,
         amountOfBYN,
         amountOfCurrency,
-        setCurrencyAmount,
-        setAction,
-        changeCurrency,
-    } = props;
+    } = useSelector(selectAllCurrencyState);
 
     let currencyRate: number = 0;
     const currenciesName = currencies.map((currency: CurrencyType) => {
@@ -38,25 +81,37 @@ const CurrencyEContainer: React.FC<TProps> = props => {
             const trigger: string = e.currentTarget.dataset.currency;
             if (trigger === 'byn') {
                 if (value === '') {
-                    setCurrencyAmount(value, value);
+                    // setCurrencyAmount(value, value);
+                    // ChangeCurrencyFieldAC(value, value);
+                    dispatch(ChangeCurrencyFieldAC(value, value))
                 } else {
-                    setCurrencyAmount(value, (+Number(value).toFixed(2) / currencyRate).toFixed(2));
+                    // setCurrencyAmount(value, (+Number(value).toFixed(2) / currencyRate).toFixed(2));
+                    // ChangeCurrencyFieldAC(value, (+Number(value).toFixed(2) / currencyRate).toFixed(2));
+                    dispatch(ChangeCurrencyFieldAC(value, (+Number(value).toFixed(2) / currencyRate).toFixed(2)))
                 }
             } else {
                 if (value === '') {
-                    setCurrencyAmount(value, value);
+                    // setCurrencyAmount(value, value);
+                    // ChangeCurrencyFieldAC(value, value);
+                    dispatch(ChangeCurrencyFieldAC(value, value))
                 } else {
-                    setCurrencyAmount((+Number(value).toFixed(2) * currencyRate).toFixed(2), value);
+                    // setCurrencyAmount((+Number(value).toFixed(2) * currencyRate).toFixed(2), value);
+                    // ChangeCurrencyFieldAC((+Number(value).toFixed(2) * currencyRate).toFixed(2), value);
+                    dispatch(ChangeCurrencyFieldAC((+Number(value).toFixed(2) * currencyRate).toFixed(2), value))
                 }
             }
         }
     };
     const changeAction = (e: React.MouseEvent<HTMLSpanElement>) => {
-        e.currentTarget.dataset.action === 'buy' ? setAction(true) : setAction(false);
+        // e.currentTarget.dataset.action === 'buy' ? setAction(true) : setAction(false);
+        // e.currentTarget.dataset.action === 'buy' ? ChangeActionAC(true) : ChangeActionAC(false);
+        e.currentTarget.dataset.action === 'buy' ? dispatch(ChangeActionAC(true)) : dispatch(ChangeActionAC(false));
     };
 
     const changeCurrentCurrency = (e: React.MouseEvent<HTMLLIElement>) => {
-        e.currentTarget.dataset.currency && changeCurrency(e.currentTarget.dataset.currency);
+        // e.currentTarget.dataset.currency && changeCurrency(e.currentTarget.dataset.currency);
+        // e.currentTarget.dataset.currency && ChangeCurrentCurrencyAC(e.currentTarget.dataset.currency);
+        e.currentTarget.dataset.currency && dispatch(ChangeCurrentCurrencyAC(e.currentTarget.dataset.currency));
     };
 
     return (
@@ -86,25 +141,32 @@ const mapStateToProps = ( { currency } : {currency: CurrencyState} ): CurrencySt
     };
 };
 
-// @ts-ignore
-const mapDispatchToProps = (dispatch: Dispatch<CurrencyReducersTypes>) : any => {
-    return {
-        setCurrencyAmount(amountOfBYN: string, amountOfCurrency: string) {
-            dispatch(ChangeCurrencyFieldAC(amountOfBYN, amountOfCurrency));
-        },
-        setAction(isBuying: boolean) {
-            dispatch(ChangeActionAC(isBuying));
-        },
-        changeCurrency(currency: string) {
-            dispatch(СhangeCurrentCurrencyAC(currency));
-        },
-    };
-};
 
-// @ts-ignore
-const connector = connect(mapStateToProps, mapDispatchToProps);
+// const mapDispatchToProps = (dispatch: Dispatch<CurrencyReducersTypes>) : any => {
+//     return {
+//         setCurrencyAmount(amountOfBYN: string, amountOfCurrency: string) {
+//             dispatch(ChangeCurrencyFieldAC(amountOfBYN, amountOfCurrency));
+//         },
+//         setAction(isBuying: boolean) {
+//             dispatch(ChangeActionAC(isBuying));
+//         },
+//         changeCurrency(currency: string) {
+//             dispatch(ChangeCurrentCurrencyAC(currency));
+//         },
+//     };
+// };
 
-type TProps = ConnectedProps<typeof connector>;
+// const connector = connect(mapStateToProps, mapDispatchToProps);
 
-export default connector(CurrencyEContainer);
+// const connector = connect(mapStateToProps, {
+//     ChangeActionAC,
+//     ChangeCurrencyFieldAC,
+//     ChangeCurrentCurrencyAC,
+// });
+//
+// type TProps = ConnectedProps<typeof connector>;
+
+// export default connector(CurrencyEContainer);
+export default CurrencyEContainer;
+
 
